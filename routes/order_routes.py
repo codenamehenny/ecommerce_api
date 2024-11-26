@@ -3,6 +3,7 @@ from schemas import order_schema
 from models import Order
 from main import db
 from marshmallow import ValidationError
+from models import User
 
 # creating an order
 @app.route('/orders', methods=['POST'])
@@ -28,7 +29,7 @@ def get_orders():
 
 # Read one order by ID
 @app.route('/orders/<int:id>', methods=['GET'])
-def get_orders(id):
+def get_order(id):
     user = db.session.get(Order, id)
     return order_schema.jsonify(order), 200
 
@@ -61,3 +62,26 @@ def delete_order(id):
     db.session.delete(order)
     db.session.commit()
     return jsonify({"message": f"succefully deleted order {id}"}), 200
+
+# Associate a single order with a user (one to one relationship)
+@app.route('/users/<int:user_id>/add_order/<int:order_id>', methods=['GET'] )
+def user_order(user_id, order_id):
+    user = db.session.get(User, user_id)
+    order = db.session.get(Order, order_id)
+
+    user.pets.append(order)
+    db.session.commit()
+    return jsonify({"message": f"{user.name} placed order #{order.id} on {order.order_date}!"}), 200
+
+# Associate one user with multiple orders (one to many relationship)
+@app.route('/users/<int:user_id>/add_orders', methods=['POST'])
+def add_orders(user_id):
+    user = db.session.get(User, user_id)
+    order_data = request.json
+
+    for id in order_data['order_ids']:
+        order = db.session.get(Order, id)
+        user.orders.append(order)
+        db.session.commit()
+
+    return jsonify({"message": "All orders added!"}), 200
