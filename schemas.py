@@ -1,7 +1,7 @@
 # This file contains the schemas to serialize and deserialize the models
 from marshmallow import Schema, ValidationError
 from models import User, Order, Product
-from main import ma
+from app import ma
 
 # User Schema
 class UserSchema(ma.SQLAlchemyAutoSchema):
