@@ -1,8 +1,11 @@
 # This file establishes the table models for User, Order and Product
 
 from sqlalchemy import ForeignKey, Table, String, Column, DateTime, Float, Integer
-from sqlaclhemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import List
+
+class Base(DeclarativeBase):
+    pass
 
 # The association table between Orders and Products
 order_product = Table(
