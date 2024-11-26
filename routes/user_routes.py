@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from schemas import user_schema
 from models import User
-from main import db
+from app import db
 from marshmallow import ValidationError
 
 # defining the CRUD operations for User and creating endpoints
