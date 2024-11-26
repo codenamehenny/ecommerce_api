@@ -12,6 +12,10 @@ def create_order()
         order_data = order_schema.load(request.json)
     except ValidationError as e:
         return jsonify(e.messages), 400
+    # check if user exists
+    user_id = order_data.get('user_id')
+    user = User.query.get(user_id)
+    
     # if the proper information was input, it will create a user object    
     new_order = Order(order_date = order_data['order_date'])
     db.session.add(new_order)
