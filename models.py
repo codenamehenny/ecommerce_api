@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
 
 # The association table between Orders and Products
 order_product = Table(
-    'order_product'
+    'order_product',
     Base.metadata,
     Column("order_id", ForeignKey("order.id"))
     Column("product_id", ForeignKey("product.id"), unique = True) # no duplicates
