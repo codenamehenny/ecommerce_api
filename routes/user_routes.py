@@ -32,13 +32,13 @@ def get_users():
 
 # Read one user by ID
 @app.route('/users/<int:id>', methods=['GET'])
-def get_user(id):
+def get_user(user_id):
     user = db.session.get(User, id)
     return user_schema.jsonify(user), 200
 
 # Update User
 @app.route('/users/<int:id>', methods=['PUT'])
-def update_user(id):
+def update_user(user_id):
     user = db.session.get(User, id)
     # Error if user not found
     if not user:
@@ -57,7 +57,7 @@ def update_user(id):
 
 # Delete User
 @app.route('/users/<int:id>', methods=['DELETE'])
-def delete_user(id):
+def delete_user(user_id):
     user = db.session.get(User, id)
     # returning an error if user not found
     if not user:
