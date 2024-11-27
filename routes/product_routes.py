@@ -3,6 +3,7 @@ from schemas import product_schema
 from models import Product
 from main import db
 from marshmallow import ValidationError
+import sqlalchemy.orm import Session
 
 # POST - Create product
 @app.route('/products', methods=['POST'])

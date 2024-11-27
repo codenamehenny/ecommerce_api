@@ -3,6 +3,7 @@ from schemas import user_schema
 from models import User
 from app import db
 from marshmallow import ValidationError
+import sqlalchemy.orm import Session
 
 # defining the CRUD operations for User and creating endpoints
 @app.route('/users', methods=['POST'])

@@ -11,8 +11,8 @@ class Base(DeclarativeBase):
 order_product = Table(
     'order_product',
     Base.metadata,
-    Column("order_id", ForeignKey("order.id"))
-    Column("product_id", ForeignKey("product.id"), unique = True) # no duplicates
+    Column("order_id", ForeignKey("orders.id")),
+    Column("product_id", ForeignKey("products.id"), unique = True) # no duplicates
 )
 
 # Users table 
@@ -32,7 +32,7 @@ class Order(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key = True, autoincrement = True)
     order_date: Mapped[DateTime] = mapped_column(DateTime)
-    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("user.id"))
+    user_id: Mapped[int] = mapped_column(Integer, ForeignKey("users.id"))
 
     # Many to One relatinship from Order to User
     user: Mapped[User] = relationship("User", back_populates = 'orders')

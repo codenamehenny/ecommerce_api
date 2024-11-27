@@ -4,6 +4,7 @@ from models import Order, Product, User
 from app import db
 from marshmallow import ValidationError
 from models import User
+import sqlalchemy.orm import Session
 
 # POST - creating an order
 @app.route('/orders', methods=['POST'])
