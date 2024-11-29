@@ -1,12 +1,14 @@
-from flask import Flask, request, jsonify
-from schemas import product_schema
+from flask import Blueprint, request, jsonify
+from schemas import product_schema, products_schema
 from models import Product
-from main import db
+from app import db
 from marshmallow import ValidationError
-import sqlalchemy.orm import Session
+
+# defining product blueprint
+product_blueprint = Blueprint('products', __name__)
 
 # POST - Create product
-@app.route('/products', methods=['POST'])
+@product_blueprint.route('/products', methods=['POST'])
 def create_product():
     try:
         product_data = product_schema.load(request.json)
@@ -16,11 +18,11 @@ def create_product():
     new_product = Product(product_name = product_data['product_name'],
         price = product_data['price'])
     db.session.add(new_product)
-    sb.session.commit()
+    db.session.commit()
     return product_schema.jsonify(new_product), 201
 
 # GET - All products
-@app.route('/products/<int:id>', methods=['GET'])
+@product_blueprint.route('/products/<int:id>', methods=['GET'])
 def get_all_products():
     products = Product.query.all()
     if not products:
@@ -28,7 +30,7 @@ def get_all_products():
     return products_schema.jsonify(products)
 
 # GET - one product
-@app.route('/products/<int:id>' methods=['GET'])
+@product_blueprint.route('/products/<int:id>' methods=['GET'])
 def get_product(product_id):
     product = db.session.get(Product, product_id)
     if not product:
@@ -38,7 +40,7 @@ def get_product(product_id):
     return product_schema.jsonify(product)
 
 # PUT - Update a product
-@app.route('/products/<int:id>', methods=['PUT'])
+@product_blueprint.route('/products/<int:id>', methods=['PUT'])
 def update_product(product_id):
     product = db.session.get(Product, product_id)
     if not product:
@@ -56,7 +58,7 @@ def update_product(product_id):
     return product_schema.jsonify(product)
 
 #  DELETE - removed product id
-@app.route('/products/<int:id>', methods=['DELETE'])
+@product_blueprint.route('/products/<int:id>', methods=['DELETE'])
 def delete_product(product_id):
     product = db.session.get(Product, product_id)
     if not product:

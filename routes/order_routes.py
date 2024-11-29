@@ -1,14 +1,16 @@
-from flask import Flask, request, jsonify
-from schemas import order_schema, orders_schema, product_schema, products_schema
+from flask import Blueprint, request, jsonify
+from schemas import order_schema, orders_schema
 from models import Order, Product, User
 from app import db
 from marshmallow import ValidationError
 from models import User
-import sqlalchemy.orm import Session
+
+# defining order blueprint
+order_blueprint = Blueprint('orders', __name__)
 
 # POST - creating an order
-@app.route('/orders', methods=['POST'])
-def create_order()
+@order_blueprint.route('/orders', methods=['POST'])
+def create_order():
     try:
         order_data = order_schema.load(request.json)
     except ValidationError as e:
@@ -30,7 +32,7 @@ def create_order()
     return order_schema.jsonify(new_order), 201 
 
 # GET - Read all orders for a user
-@app.route('/orders/user/<int:user_id>', methods=['GET'])
+@order_blueprint.route('/orders/user/<int:user_id>', methods=['GET'])
 def get_orders_for_user(user_id):
     # checking if user exists and returning an error if not
     user = db.session.get(User, order_data['user_id'])
@@ -44,7 +46,7 @@ def get_orders_for_user(user_id):
     return orders_schema.jsonify(orders), 200
 
 # GET - Add a product to an order (preventing duplicates)
-@app.route('/orders/<int:order_id>/add_product/<int:product_id>', methods=['GET'])
+@order_blueprint.route('/orders/<int:order_id>/add_product/<int:product_id>', methods=['GET'])
 def add_product_to_order(order_id, product_id):
     # checking if order exists
     order = db.session.get(Order, order_id)
@@ -71,7 +73,7 @@ def add_product_to_order(order_id, product_id):
     return order_schema.jsonify(order), 200
 
 # GET - All products from an order
-@app.route('/orders/<int:order_id>/products', methods=['GET'])
+@order_blueprint.route('/orders/<int:order_id>/products', methods=['GET'])
 def get_products_for_order(order_id):
     # returning error if order doesn't exist
     order = db.session.get(Order, order_id)
@@ -84,7 +86,7 @@ def get_products_for_order(order_id):
     return products_schema.jsonify(products), 200    
 
 # DELETE - Delete an order
-@app.route('/orders/<int:id>', methods=['DELETE'])
+@order_blueprint.route('/orders/<int:id>', methods=['DELETE'])
 def delete_order(order_id):
     order = db.session.get(Order, order_id)
     # returning an error if user not found
