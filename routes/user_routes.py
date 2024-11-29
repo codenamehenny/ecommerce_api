@@ -10,7 +10,7 @@ user_blueprint = Blueprint('users', __name__)
 
 # POST - create user route
 @blueprint.route('/users', methods=['POST'])
-def create_user()
+def create_user():
     try:
         user_data = user_schema.load(request.json)
     except ValidationError as e:
