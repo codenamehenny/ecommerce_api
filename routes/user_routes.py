@@ -1,12 +1,15 @@
-from flask import Flask, request, jsonify
-from schemas import user_schema
+from flask import Blueprint, request, jsonify
+from schemas import user_schema, users_schema
 from models import User
 from app import db
 from marshmallow import ValidationError
-import sqlalchemy.orm import Session
+import sqlalchemy.orm import select
 
-# defining the CRUD operations for User and creating endpoints
-@app.route('/users', methods=['POST'])
+# user blueprint
+user_blueprint = Blueprint('users', __name__)
+
+# POST - create user route
+@blueprint.route('/users', methods=['POST'])
 def create_user()
     try:
         user_data = user_schema.load(request.json)
@@ -23,22 +26,21 @@ def create_user()
     # sending user object back to confirm new user was added to the database
     return user_schema.jsonify(new_user), 201 
 
-#  Read all users 
-@app.route('/users', methods=['GET'])
+# GET - Read all users 
+@user_blueprint.route('/users', methods=['GET'])
 def get_users():
     query = select(User)
     users = db.session.execute(query).scalars().all()
-
     return users_schema.jsonify(users), 200
 
 # Read one user by ID
-@app.route('/users/<int:id>', methods=['GET'])
+@user_blueprint.route('/users/<int:id>', methods=['GET'])
 def get_user(user_id):
     user = db.session.get(User, id)
     return user_schema.jsonify(user), 200
 
 # Update User
-@app.route('/users/<int:id>', methods=['PUT'])
+@user_blueprint.route('/users/<int:id>', methods=['PUT'])
 def update_user(user_id):
     user = db.session.get(User, id)
     # Error if user not found
@@ -57,7 +59,7 @@ def update_user(user_id):
     return user_schema.jsonify(user), 200
 
 # Delete User
-@app.route('/users/<int:id>', methods=['DELETE'])
+@user_blueprint.route('/users/<int:id>', methods=['DELETE'])
 def delete_user(user_id):
     user = db.session.get(User, id)
     # returning an error if user not found
