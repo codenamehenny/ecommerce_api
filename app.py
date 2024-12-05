@@ -19,11 +19,6 @@ db = SQLAlchemy(model_class = Base)
 db.init_app(app)
 ma = Marshmallow(app)
 
-if __name__ == "__main__":
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
-
 # Registering blueprints
 app.register_blueprint(user_blueprint, url_prefix='/api')
 app.register_blueprint(order_blueprint, url_prefix='/api')
@@ -259,3 +254,8 @@ def delete_product(product_id):
     db.session.commit()
     return jsonify({"message":
         f"Product ID {product_id} deleted successfully"}), 200
+
+if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
